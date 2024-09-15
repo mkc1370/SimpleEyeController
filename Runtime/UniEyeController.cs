@@ -6,6 +6,7 @@ using UniEyeController.Core.Extensions;
 using UniEyeController.Core.Process.Blink;
 using UniEyeController.Core.Process.LookAt;
 using UniEyeController.Core.Process.MicroMove;
+using UnityEditor;
 using UnityEngine;
 
 namespace UniEyeController
@@ -35,6 +36,20 @@ namespace UniEyeController
         public MicroMoveProcess microMoveProcess = new MicroMoveProcess();
         public BlinkProcess blinkProcess = new BlinkProcess();
 
+        public bool IsSettingValid
+        {
+            get
+            {
+                if (assignMethod == EyeAssignMethod.Generic && gameObject.scene == prefabForGenericAvatar.scene)
+                {
+                    Debug.LogError("GenericAvatarの初期状態参照用のPrefabはScene上のものを使用しないでください");
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         private void OnEnable()
         {
             Init();
@@ -42,6 +57,15 @@ namespace UniEyeController
 
         public void Init()
         {
+            // TODO : 仮の対応
+            if (assignMethod == EyeAssignMethod.Generic && gameObject.scene == prefabForGenericAvatar.scene)
+            {
+                var prefab = PrefabUtility.GetCorrespondingObjectFromSource(gameObject);
+                prefabForGenericAvatar = prefab;
+            }
+            
+            if (!IsSettingValid) enabled = false;
+            
             GetRequiredComponents();
             ChangeEyeBones();
         }

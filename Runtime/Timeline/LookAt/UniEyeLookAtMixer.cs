@@ -39,6 +39,8 @@ namespace UniEyeController.Timeline.LookAt
         {
             var controller = playerData as UniEyeController;
             if (controller == null) return;
+            if (!controller.gameObject.activeInHierarchy) return;
+            if (!controller.IsSettingValid) return;
 
             _process = controller.lookAtProcess;
             if (_process == null) return;

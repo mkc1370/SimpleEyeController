@@ -140,7 +140,13 @@ namespace UniEyeController.Editor
                             break;
                         case EyeAssignMethod.Generic:
                             EditorExtensions.BeginErrorColor(_prefabForGenericAvatar.objectReferenceValue == null);
-                            EditorGUILayout.PropertyField(_prefabForGenericAvatar, new GUIContent("基準となるPrefab"));
+                            EditorGUI.BeginChangeCheck();
+                            // Scene上のGameObjectを指定させないためにObjectFieldを使う
+                            script.prefabForGenericAvatar = EditorGUILayout.ObjectField("基準となるPrefab", script.prefabForGenericAvatar, typeof(GameObject), false) as GameObject;
+                            if (EditorGUI.EndChangeCheck())
+                            {
+                                EditorUtility.SetDirty(script);
+                            }
                             EditorExtensions.EndErrorColor();
                             
                             GUILayout.BeginHorizontal();
